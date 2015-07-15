@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="splyt-ios" xmlns:unless="ant:unless" basedir="./.." default="build-package">
+
+    <!-- bring in ant contrib 
+    http://sourceforge.net/projects/ant-contrib/files/ant-contrib/ant-contrib-0.6/ant-contrib-0.6-bin.zip/download -->
+    <taskdef resource="net/sf/antcontrib/antcontrib.properties">
+        <classpath>
+           <pathelement location="${basedir}/../common/build/tasks/ant-contrib-0.6.jar"/>
+        </classpath>
+    </taskdef>
+
+    <!-- 
+    COMMON PROPERTIES -->
+    <property name="package.location" value="${basedir}/bin" unless:set="package.location"/>
+    <property name="doxygen.location" value="/usr/local/bin/doxygen" unless:set="doxygen.location"/>
+    <property name="doxyfile.location" value="${basedir}/Doxygen"/>
+    <property name="xcodebuild.location" value="/Applications/Xcode.app/Contents/Developer/usr/bin/xcodebuild"/>
+
+    <!--
+    BUILD-PACKAGE
+    Default package target which clean the environment, generates docs, packages
+    everything up and puts it in the packages folder -->
+    <target name="build-package" depends="check-installed-software,
+        current-git-sha1,
+        clean-package,
+        build-framework,
+        generate-docs,
+        assemble-parts,
+        create-archive"/>
+
+    <!--
+    CHECK-INSTALLS
+    Checks to see if necessary software can be detected and either installs it or prompts the user to do so. -->
+    <target name="check-installed-software">
+        <!-- Check Doxygen -->
+        <available file="${doxygen.location}" property="doxygen.installed"/>
+        <if>
+            <equals arg1="${doxygen.installed}" arg2="true"/>
+            <then>
+                <echo message="Doxygen is installed!!!"/>
+            </then>
+            <else>
+                <fail message="You do not seem to have Doxygen installed at ${doxygen.location}  Please install it with: brew install doxygen"/>
+            </else>
+        </if>
+        <!-- Check Xcode -->
+        <available file="${xcodebuild.location}" property="xcodebuild.installed"/>
+        <if>
+            <equals arg1="${xcodebuild.installed}" arg2="true"/>
+            <then>
+                <echo message="Xcode Developer Tools are installed!!!"/>
+            </then>
+            <else>
+                <fail message="You do not have Xcode Developer Tools installed.  Please install them."/>
+            </else>
+        </if>
+    </target>
+
+    <!--
+    CURRENT-GIT-SHA
+    Queries the git repository for the shortened SHA-1 of the repository and creates property out 
+    of it called current-git-sha1. --> 
+    <target name="current-git-sha1">
+        <exec executable="git" dir="${basedir}" outputproperty="current-git-sha1">
+            <arg value="log"/>
+            <arg value="--pretty=format:%h"/>
+            <arg value="-n 1"/>
+        </exec>
+        <echo message="Current (shortened) repository SHA-1: ${current-git-sha1}"/>
+    </target>
+
+    <!--
+    CLEAN-PACKAGE
+    Removes the directory that we are about to create if it exists -->
+    <target name="clean-package" depends="current-git-sha1">
+        <!-- create a few properties that we need -->
+        <property name="package.name" value="splyt-ios-${current-git-sha1}"/>
+        <property name="package.folder" value="${package.location}/${package.name}"/>
+
+        <!-- nuke the package destination -->
+        <delete dir="${package.folder}" failOnError="false" includeEmptyDirs="true"/>
+        <mkdir dir="${package.folder}"/>
+    </target>
+
+    <!--
+    BUILD-FRAMEWORK
+    Builds the universal or fat Splyt.framework by invoking an Xcode command line build -->
+    <target name="build-framework">
+        <exec dir="${basedir}" executable="${xcodebuild.location}">
+            <arg value="-workspace"/>
+            <arg value="Splyt.xcworkspace"/>
+            <arg value="-scheme"/>
+            <arg value="SplytUniversal"/>
+            <arg value="-configuration"/>
+            <arg value="Release"/>
+            <arg value="clean"/>
+            <arg value="build"/>
+        </exec>
+    </target>
+
+    <!--
+    GENERATE-DOCS
+    Generate documentation using Doxygen -->
+    <target name="generate-docs" depends="check-installed-software">
+        <delete dir="${doxyfile.location}/html" failOnError="false"/>
+        <exec dir="${doxyfile.location}" executable="${doxygen.location}">
+        <arg value="${doxyfile.location}/splyt.dox"/>
+        </exec>
+    </target>
+
+    <!--
+    ASSEMBLE-PARTS
+    Copy all parts of the SDK as checked in to their appropriate customer facing locations -->
+    <target name="assemble-parts" depends="generate-docs, clean-package">
+        <!-- readme -->
+        <copy file="${basedir}/readme.md" todir="${package.folder}"/>
+
+        <!-- documentation -->
+        <copy todir="${package.folder}/doc">
+            <fileset dir="${doxyfile.location}/html"/>
+        </copy>
+
+        <!-- framework -->
+        <mkdir dir="${package.folder}/framework"/>
+        <exec executable="cp">
+            <arg line='-a "${basedir}/samples/bubblepop/bubblepop/Frameworks/Splyt.framework"'/>
+            <arg line="${package.folder}/framework"/>
+        </exec>
+
+        <!-- sample -->
+        <mkdir dir="${package.folder}/samples"/>
+        <exec executable="cp">
+            <arg line='-a "${basedir}/samples/bubblepop/bubblepop"'/>
+            <arg line="${package.folder}/samples/bubblepop"/>
+        </exec>
+        <copy todir="${package.folder}/samples/bubblepop.xcodeproj">
+            <fileset dir="${basedir}/samples/bubblepop/bubblepop.xcodeproj"/>
+        </copy>
+    </target>
+
+    <!--
+    CREATE-ARCHIVE
+    Zip up the package -->
+    <target name="create-archive" depends="assemble-parts">
+        <!-- Delete any currently-existing archive (we don't want to merge) -->
+        <delete file="${package.location}/${package.name}.zip" failOnError="false"/>
+        <exec dir="${package.location}" executable="zip">
+            <arg value="-r"/>
+            <arg value="-m"/>
+            <arg value="-q"/>
+            <arg value="-y"/>
+            <arg value="${package.name}.zip"/>
+            <arg value="${package.name}"/>
+        </exec>
+    </target>
+
+</project>

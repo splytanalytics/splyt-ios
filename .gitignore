@@ -1,0 +1,6 @@
+DerivedData/
+*.o
+bin/**
+xcuserdata/
+.project.pbxproj.swp
+Splyt.framework/
