@@ -3,7 +3,7 @@
 //  Splyt
 //
 //  Created by Jeremy Paulding on 12/6/13.
-//  Copyright (c) 2013 Row Sham Bow, Inc. All rights reserved.
+//  Copyright 2015 Knetik, Inc. All rights reserved.
 //
 
 #import <Splyt/SplytConstants.h>
@@ -24,7 +24,7 @@
 /**
  Factory method for creating an instance of SplytEntityInfo for a user.
  @param userId The user ID.
- @param initBlock A callback function that can be used to set initial user properties.  To do this, 
+ @param initBlock A callback function that can be used to set initial user properties.  To do this,
         call SplytEntityInfo::setProperty:withValue: or SplytEntityInfo::setProperties: from inside the callback.
  @return A populated SplytEntityInfo.
  */
@@ -47,7 +47,7 @@
 - (id) init __attribute__((unavailable("Use factory methods +createUserInfo or +createDeviceInfo to init a SplytEntityInfo")));
 
 /**
- Overrides the user or device ID. 
+ Overrides the user or device ID.
  Normally, this is only used in the case where an application wants specific control over device IDs, which SPLYT auto-generates by default.
  @param entityId The user or device ID to report to SPLYT.
  */
@@ -103,13 +103,13 @@
  @brief A helper class that provides information used to initialize SPLYT.
  @details Use the factory methods SplytInitParams::createWithCustomerId: or
           SplytInitParams::createWithCustomerId:andInitBlock: to create an instance of this class.
- 
+
  @see SplytCore::init:andThen:
  */
 @interface SplytInitParams : NSObject
 /**
- Creates an instance of SplytInitParams with the specified customer ID.  
- @param customerId The customer ID.  
+ Creates an instance of SplytInitParams with the specified customer ID.
+ @param customerId The customer ID.
         This is a unique string that associates the data you send with a specific product's dashboards in SPLYT.
         Note that the customer ID must be set up in SPLYT's web application beforehand, or else the data will not
         be saved.  If you do not know your customer ID, contact SPLYT support: support@splyt.com.
@@ -132,8 +132,8 @@
 - (id) init __attribute__((unavailable("Use factory method +createWithCustomerId to init a SplytInitParams")));
 
 /**
- Describes the device that the current app instance is running on.  
- If left <code>nil</code>, SPLYT will use a randomly generated identifier for the device and 
+ Describes the device that the current app instance is running on.
+ If left <code>nil</code>, SPLYT will use a randomly generated identifier for the device and
  automatically determine whether this is a new device that is running the app for the first time.
  */
 @property (strong) SplytEntityInfo* deviceInfo;
@@ -145,7 +145,7 @@
 
 /**
  The timeout interval, in milliseconds (default: 1500 milliseconds).
- If during a connection attempt the request remains idle for longer than the timeout interval, 
+ If during a connection attempt the request remains idle for longer than the timeout interval,
  the request is considered to have timed out.
  */
 @property NSInteger requestTimeout;
@@ -180,8 +180,8 @@
 
 /**
  Register a user with SPLYT and make them the currently active user.
- This can be done at any point when a new user is interacted with by the application. Note 
- that if the active user is known at startup, it is generally ideal to provide their info 
+ This can be done at any point when a new user is interacted with by the application. Note
+ that if the active user is known at startup, it is generally ideal to provide their info
  directly to SplytCore::init:andThen: instead.
  @param userInfo A SplytEntityInfo created with SplytEntityInfo::createUserInfo: or SplytEntityInfo::createUserInfo:withInitBlock:
  @param callback Application-defined callback which will occur on completion
@@ -197,7 +197,7 @@
  */
 - (SplytError) setActiveUser:(NSString*)userId;
 
-/** 
+/**
  Clears the active user ID.
  Useful when the logged in user logs out of the application.  Clearing the active user allows SPLYT to
  provide non user-specific tuning values and report telemetry which is not linked to a user.

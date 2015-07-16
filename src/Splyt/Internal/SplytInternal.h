@@ -2,7 +2,7 @@
 //  SplytInternal.h
 //  Splyt
 //
-//  Copyright (c) 2013 Row Sham Bow, Inc. All rights reserved.
+//  Copyright 2015 Knetik, Inc. All rights reserved.
 //
 
 #import <Splyt/Splyt.h>

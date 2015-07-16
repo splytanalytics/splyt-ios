@@ -3,22 +3,22 @@
 //  Splyt
 //
 //  Created by Jeremy Paulding on 12/6/13.
-//  Copyright (c) 2013 Row Sham Bow, Inc. All rights reserved.
+//  Copyright 2015 Knetik, Inc. All rights reserved.
 //
 
 #import <Splyt/SplytConstants.h>
 
 /**
- @brief Provides access to SPLYT's dynamic tuning variables.  
+ @brief Provides access to SPLYT's dynamic tuning variables.
  @details Tuning variables are defined in SPLYT's web app and can have customized values on a per-user
-          basis, depending on whether the active user of the app is participating in an A/B test, or 
-          belongs to a segment of users that has been assigned customized values for one or more 
+          basis, depending on whether the active user of the app is participating in an A/B test, or
+          belongs to a segment of users that has been assigned customized values for one or more
           tuning variables.
  */
 @interface SplytTuning : NSObject
 /**
- Retrieves updated values from SPLYT for all tuning variables. 
- 
+ Retrieves updated values from SPLYT for all tuning variables.
+
  If multiple users are registered (see SplytCore::registerUser:andThen:), updated values
  will be retrieved for all of them.
 
@@ -31,7 +31,7 @@
  > **Note:** This is not an async or blocking operation. Tuning values are proactively cached by
  > the SPLYT framework during SplytCore::init:andThen:, SplytCore::registerUser:andThen:,
  > and SplytTuning::refreshAndThen:
- 
+
  @param varName Application-defined name of a tuning variable to retrieve.
  @param defaultValue A default value for the tuning variable, used when a dynamic value has not
         been specified or is otherwise not available.

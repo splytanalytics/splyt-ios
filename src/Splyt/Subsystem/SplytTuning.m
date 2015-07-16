@@ -3,7 +3,7 @@
 //  Splyt
 //
 //  Created by Jeremy Paulding on 12/6/13.
-//  Copyright (c) 2013 Row Sham Bow, Inc. All rights reserved.
+//  Copyright 2015 Knetik, Inc. All rights reserved.
 //
 
 #import <Splyt/SplytTuning.h>
@@ -30,12 +30,12 @@
         [SplytUtil logDebug:@"Trying to set nil tuning values. Possibly an unexpected server result?"];
         return;
     }
-    
+
     if(nil == entityId) {
         [SplytUtil logDebug:@"Trying to set tuning vars for a nil entity. Unsupported."];
         return;
     }
-    
+
     NSMutableDictionary *typeStorage = [_storage objectForKey:type];
     if(nil != typeStorage) {
         [typeStorage setObject:values forKey:entityId];
@@ -57,21 +57,21 @@
     // don't try to record a nameless variable - bad things happen
     if(nil == name)
         return NO;
-    
+
     NSDate* then = [_used objectForKey:name];
     NSDate* now = [NSDate date];
-    
+
     if(nil == then || [now timeIntervalSinceDate:then] > interval) {
         [_used setObject:now forKey:name];
         return YES;
     }
-    
+
     return NO;
 }
 
 - (id) getValue:(NSString*)name forEntityOfType:(NSString*)type andId:(NSString*)entityId usingDefault:(id)defaultValue {
     id value = nil;
-    
+
     NSDictionary *typeStorage = [_storage objectForKey:type];
     if(nil != typeStorage) {
         NSDictionary *entityStorage = [typeStorage objectForKey:entityId];
@@ -98,10 +98,10 @@
             }
         }
     }
-    
+
     if(nil == value)
         return defaultValue;
-    
+
     return value;
 }
 
@@ -143,7 +143,7 @@ static NSString* const SplytTuning_CACHE_FILENAME = @"com.splyt.tuningCache";
         // for the super unlikely event that a non-coded file exists at the location
         _cacheVars = nil;
     }
-    
+
     // if we didn't load cached vars, just init the structure so it's ready for future use
     if(nil == _cacheVars)
         _cacheVars = [[SplytTuningValues alloc] init];
@@ -157,7 +157,7 @@ static NSString* const SplytTuning_CACHE_FILENAME = @"com.splyt.tuningCache";
         [SplytUtil logError:[NSString stringWithFormat:@"Unable to cache tuning to storage! Exception: %@", [exception reason]]];
     }
 }
-    
+
 - (SplytError) parseRefreshData:(NSDictionary*)ssfType {
     // this would mean something failed prior to this point
     if(nil == ssfType)
@@ -168,13 +168,13 @@ static NSString* const SplytTuning_CACHE_FILENAME = @"com.splyt.tuningCache";
         [SplytUtil logError:[NSString stringWithFormat:@"-refresh failed on server. SSF Error: %ld", (long)ssfError]];
         return SplytError_Generic;
     }
-    
+
     NSDictionary* refreshRet = SPLYT_DYNAMIC_CAST([ssfType objectForKey:@"data"], NSDictionary);
     if(nil == refreshRet) {
         [SplytUtil logError:@"-refresh failed on server. No data in response"];
         return SplytError_Generic;
     }
-    
+
     NSDictionary* deviceTuning = SPLYT_DYNAMIC_CAST([refreshRet objectForKey:@"deviceTuning"], NSDictionary);
     if(nil != deviceTuning) {
         NSDictionary* deviceData = SPLYT_DYNAMIC_CAST([deviceTuning objectForKey:@"data"], NSDictionary);
@@ -185,7 +185,7 @@ static NSString* const SplytTuning_CACHE_FILENAME = @"com.splyt.tuningCache";
             }
         }
     }
-    
+
     NSDictionary* userTuning = SPLYT_DYNAMIC_CAST([refreshRet objectForKey:@"userTuning"], NSDictionary);
     if(nil != userTuning) {
         NSDictionary* userData = SPLYT_DYNAMIC_CAST([userTuning objectForKey:@"data"], NSDictionary);
@@ -203,7 +203,7 @@ static NSString* const SplytTuning_CACHE_FILENAME = @"com.splyt.tuningCache";
             }
         }
     }
-    
+
     [self persist];
 
     return SplytError_Success;
@@ -216,9 +216,9 @@ static NSString* const SplytTuning_CACHE_FILENAME = @"com.splyt.tuningCache";
     NSString *libraryDirectory = [paths objectAtIndex:0];
     _cachePath = [libraryDirectory stringByAppendingPathComponent:SplytTuning_CACHE_FILENAME];
     _cacheDirty = NO;
-    
+
     [self readCache];
-    
+
     if(callback)
         callback(SplytError_Success);
 }
@@ -241,7 +241,7 @@ static NSString* const SplytTuning_CACHE_FILENAME = @"com.splyt.tuningCache";
 
 - (void) clearEntityOfType:(NSString*)type andId:(NSString *)entityId {
     [_cacheVars removeEntityOfType:type andId:entityId];
-    
+
     _cacheDirty = YES;
 }
 
@@ -253,10 +253,10 @@ static NSString* const SplytTuning_CACHE_FILENAME = @"com.splyt.tuningCache";
 
 - (void) refreshAndThen:(SplytCallback)callback {
     NSArray* users = [[self.core registeredUsers] allObjects];
-    
+
     //grab a timestamp...
     NSNumber* timestamp = [SplytUtil getTimestamp];
-    
+
     [self.core sendAsync:@"tuner_refresh" withArgs:@[timestamp, timestamp, SPLYT_SAFE(self.core.deviceId), SPLYT_SAFE(users)] andThen:^(NSDictionary *ssfData) {
         SplytError splytError = [self parseRefreshData:ssfData];
         if(callback)
@@ -268,15 +268,15 @@ static NSString* const SplytTuning_CACHE_FILENAME = @"com.splyt.tuningCache";
     if([_cacheVars markUsed:varName every:SplytTuning_INTERVAL_RECORDAGAIN]) {
         [self.core sendDataPoint:@"tuner_recordUsed" withArgs:@[SPLYT_SAFE([varName copy]), SPLYT_SAFE([defaultValue copy])]];
     }
-    
+
     NSString* entityType = SPLYT_ENTITY_TYPE_DEVICE;
     NSString* entityId = self.core.deviceId;
-    
+
     if(SPLYT_ISVALIDID(self.core.userId)) {
         entityType = SPLYT_ENTITY_TYPE_USER;
         entityId = self.core.userId;
     }
-    
+
     return [_cacheVars getValue:varName forEntityOfType:entityType andId:entityId usingDefault:defaultValue];
 }
 @end

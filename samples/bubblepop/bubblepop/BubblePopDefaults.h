@@ -3,7 +3,7 @@
 //  bubblepop
 //
 //  Created by Andrew Brown on 1/14/14.
-//  Copyright (c) 2014 Row Sham Bow, Inc. All rights reserved.
+//  Copyright 2015 Knetik, Inc. All rights reserved.
 //
 
 // Default values for several elements that affect gameplay.

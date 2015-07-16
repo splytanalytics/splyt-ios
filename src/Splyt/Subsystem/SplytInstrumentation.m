@@ -3,7 +3,7 @@
 //  Splyt
 //
 //  Created by Jeremy Paulding on 12/6/13.
-//  Copyright (c) 2013 Row Sham Bow, Inc. All rights reserved.
+//  Copyright 2015 Knetik, Inc. All rights reserved.
 //
 
 #import <Splyt/SplytInstrumentation.h>
@@ -24,19 +24,19 @@
         [SplytUtil logDebug:@"category may not be nil for a transaction"];
         return nil;
     }
-    
+
     self = [super init];
-    
+
     // We make our own copy in case the user is using a mutable string
     _category = [category copy];
     _transactionId = [transactionId copy];
     _timeoutMode = SplytTimeoutMode_Default;
     _timeout = 0;
     _state = [[NSMutableDictionary alloc] init];
-   
+
     if(initBlock)
         initBlock(self);
-    
+
     return self;
 }
 
@@ -46,10 +46,10 @@
         [SplytUtil logDebug:@"Cannot pass nil key to -setProperty. Ignoring"];
         return;
     }
-    
+
     // Create a dictionary from the key/value
     NSMutableDictionary* temp = [[NSMutableDictionary alloc] initWithDictionary:@{key:SPLYT_SAFE(value)}];
-    
+
     // Now append these properties
     [self setProperties:temp];
 }
@@ -58,7 +58,7 @@
         [SplytUtil logDebug:@"Ignoring nil values passed to setProperties"];
         return;
     }
-    
+
     // Make our own deep copy of what's passed in so that the data doesn't mutate before it's actually sent
     NSDictionary* copy = (NSDictionary*)CFBridgingRelease(CFPropertyListCreateDeepCopy(kCFAllocatorDefault, (CFDictionaryRef)values, kCFPropertyListImmutable));
 
@@ -86,9 +86,9 @@
         SPLYT_SAFE(_transactionId),
         SPLYT_SAFE(_state)
     ];
-    
+
     [self.core sendDataPoint:@"datacollector_beginTransaction" withArgs:args];
-    
+
     // Clear the properties so we don't waste bandwidth by sending them again on update/end
     // Note that we create a new dictionary as opposed to removing the objects as those are still being referenced by the event that has yet to be sent
     _state = [[NSMutableDictionary alloc] init];
@@ -100,7 +100,7 @@
         SPLYT_SAFE(_transactionId),
         SPLYT_SAFE(_state)
     ];
-    
+
     [self.core sendDataPoint:@"datacollector_updateTransaction" withArgs:args];
 
     // Clear the properties so we don't waste bandwidth by sending them again on end
@@ -117,7 +117,7 @@
         SPLYT_SAFE(_transactionId),
         SPLYT_SAFE(_state)
     ];
-    
+
     [self.core sendDataPoint:@"datacollector_endTransaction" withArgs:args];
 
     // Clear the properties in case this transaction happens to be reused.  If so, we expect new properties to be set
@@ -160,7 +160,7 @@
 - (void) updateDeviceState:(NSDictionary *)state {
     // Make our own deep copy of what's passed in so that the data doesn't mutate before it's actually sent
     NSDictionary* copy = (NSDictionary*)CFBridgingRelease(CFPropertyListCreateDeepCopy(kCFAllocatorDefault, (CFDictionaryRef)state, kCFPropertyListImmutable));
-    
+
     if (nil != copy) {
         [self.core sendDataPoint:@"datacollector_updateDeviceState" withArgs:@[SPLYT_SAFE(copy)]];
     }
@@ -171,7 +171,7 @@
 - (void) updateUserState:(NSDictionary *)state {
     // Make our own deep copy of what's passed in so that the data doesn't mutate before it's actually sent
     NSDictionary* copy = (NSDictionary*)CFBridgingRelease(CFPropertyListCreateDeepCopy(kCFAllocatorDefault, (CFDictionaryRef)state, kCFPropertyListImmutable));
-    
+
     if (nil != copy) {
         [self.core sendDataPoint:@"datacollector_updateUserState" withArgs:@[SPLYT_SAFE(copy)]];
     }
@@ -186,7 +186,7 @@
         SPLYT_SAFE([balanceModification copy]),
         SPLYT_SAFE(@(isCurrency))
     ];
-    
+
     [self.core sendDataPoint:@"datacollector_updateCollection" withArgs:args];
 }
 @end

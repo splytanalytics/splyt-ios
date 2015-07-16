@@ -3,7 +3,7 @@
 //  Splyt
 //
 //  Created by Jeremy Paulding on 12/6/13.
-//  Copyright (c) 2013 Row Sham Bow, Inc. All rights reserved.
+//  Copyright 2015 Knetik, Inc. All rights reserved.
 //
 
 @import Foundation;
@@ -23,9 +23,9 @@ extern NSString* const SPLYT_TXN_ERROR;
 typedef NS_ENUM(NSUInteger, SplytTimeoutMode) {
     SplytTimeoutMode_Transaction, /**< The transaction will be kept "open" only by direct updates to the transaction itself. */
     SplytTimeoutMode_Any,         /**< The transaction will be kept "open" by updates to *any* transaction for the current device or user <i>(Note: not yet supported)</i>. */
-    
+
     SplytTimeoutMode_Count,
-    
+
     SplytTimeoutMode_Default = SplytTimeoutMode_Transaction /**< The default timeout mode (same as ::SplytTimeoutMode_Transaction). */
 };
 /**@}*/

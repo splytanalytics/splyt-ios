@@ -2,7 +2,7 @@
 //  SplytPurchase.h
 //  Splyt
 //
-//  Copyright (c) 2013 Row Sham Bow, Inc. All rights reserved.
+//  Copyright 2015 Knetik, Inc. All rights reserved.
 //
 
 #import <Splyt/SplytConstants.h>
@@ -15,7 +15,7 @@
 
 /**
  Reports the price of the item being purchased.
- 
+
  @param amount The price of the item.
  @param currency The currency code (e.g., <code>"usd"</code>) that applies to `amount`.
  */
@@ -57,7 +57,7 @@
 
 /**
  Factory method used to create an instance of SplytPurchaseTransaction.
- 
+
  @param transactionId A unique identifier for the created transaction.  This is only required in situations
         where multiple purchase transactions may exist for the same user at the same time.
  @return The created SplytPurchaseTransaction.
@@ -66,7 +66,7 @@
 
 /**
  Factory method used to create an instance of SplytPurchaseTransaction.
- 
+
  @param initBlock A callback function that can be used to set the initial properties for the purchase transaction.
         To do this, call SplytTransaction::setProperty:withValue: or
         SplytTransaction::setProperties: on the instance of SplytPurchaseTransaction passed to the `initBlock` callback.
@@ -76,7 +76,7 @@
 
 /**
  Factory method used to create an instance of SplytPurchaseTransaction.
- 
+
  @param transactionId A unique identifier for the created transaction.  This is only required in situations
         where multiple purchase transactions may exist for the same user at the same time.
  @param initBlock A callback function that can be used to set the initial properties for the purchase transaction.

@@ -258,7 +258,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastUpgradeCheck = 0610;
-				ORGANIZATIONNAME = "Row Sham Bow, Inc.";
+				ORGANIZATIONNAME = "Knetik, Inc.";
 				TargetAttributes = {
 					D09C3F411A5EE69C00F3EE8E = {
 						CreatedOnToolsVersion = 6.1.1;

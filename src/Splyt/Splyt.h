@@ -2,7 +2,7 @@
 //  Splyt.h
 //  Splyt
 //
-//  Copyright (c) 2013 Row Sham Bow, Inc. All rights reserved.
+//  Copyright 2015 Knetik, Inc. All rights reserved.
 //
 
 // header guard included here, in the event that consumers of this code try to #include, instead of #import
@@ -25,7 +25,7 @@ NS_ROOT_CLASS
 + (SplytCore*) Core;
 /**
  The singleton instance of SplytInstrumentation; used to create <a href='SplytTransaction'>transactions</a>
- that describe activity that is unique to your application.  Also used to report updated state information 
+ that describe activity that is unique to your application.  Also used to report updated state information
  about the active user and the device that the app is running on.
  */
 + (SplytInstrumentation*) Instrumentation;

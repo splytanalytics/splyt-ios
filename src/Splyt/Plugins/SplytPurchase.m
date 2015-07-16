@@ -3,7 +3,7 @@
 //  Splyt
 //
 //  Created by Chris Staymates on 4/25/13.
-//  Copyright (c) 2013 Row Sham Bow, Inc. All rights reserved.
+//  Copyright 2015 Knetik, Inc. All rights reserved.
 //
 
 #import <Splyt/SplytPurchase.h>
@@ -21,13 +21,13 @@ static const NSTimeInterval DEFAULT_TIMEOUT = 10.0 * 60.0; // 10 minutes
 
 - (id) initWithId:(NSString*)transactionId andInitBlock:(void(^)(SplytPurchaseTransaction*)) initBlock {
     self = [super initWithCategory:CATEGORY_NAME andId:transactionId andInitBlock:nil];
-    
+
     // override some internals before calling init block
     _timeout = DEFAULT_TIMEOUT;
-    
+
     if(initBlock)
         initBlock(self);
-    
+
     return self;
 }
 
@@ -78,7 +78,7 @@ static const NSTimeInterval DEFAULT_TIMEOUT = 10.0 * 60.0; // 10 minutes
 - (SplytPurchaseTransaction*) TransactionWithId:(NSString*)transactionId andInitBlock:(void(^)(SplytPurchaseTransaction*)) initBlock {
     SplytPurchaseTransaction *trx = [[SplytPurchaseTransaction alloc] initWithId:transactionId andInitBlock:initBlock];
     trx.core = self.instrumentation.core;
-    
+
     return trx;
 }
 

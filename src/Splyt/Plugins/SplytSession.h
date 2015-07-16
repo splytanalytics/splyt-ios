@@ -2,7 +2,7 @@
 //  SplytSession.h
 //  Splyt
 //
-//  Copyright (c) 2013 Row Sham Bow, Inc. All rights reserved.
+//  Copyright 2015 Knetik, Inc. All rights reserved.
 //
 
 #import <Splyt/SplytConstants.h>
@@ -21,14 +21,14 @@
 @interface SplytSession : NSObject
 /**
  Factory method used to create an instance of SplytSessionTransaction.
- 
+
  @return The created SplytSessionTransaction.
  */
 - (SplytSessionTransaction*) Transaction;
 
 /**
  Factory method used to create an instance of SplytSessionTransaction.
- 
+
  @param initBlock A callback function that can be used to set the initial properties for the session transaction.
         To do this, call SplytTransaction::setProperty:withValue: or
         SplytTransaction::setProperties: on the instance of SplytSessionTransaction passed to the `initBlock` callback.

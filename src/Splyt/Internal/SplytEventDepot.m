@@ -3,7 +3,7 @@
 //  Splyt
 //
 //  Created by Jeremy Paulding on 12/16/13.
-//  Copyright (c) 2013 Row Sham Bow, Inc. All rights reserved.
+//  Copyright 2015 Knetik, Inc. All rights reserved.
 //
 
 #import <Splyt/SplytEventDepot.h>
@@ -63,9 +63,9 @@ typedef NSDictionary SplytEvent;
     else {
         NSAssert([url isEqualToString:_holdingBinURL], @"Should never be placing events in a bin with a different URL");
     }
-    
+
     [_holdingBin addObject:event];
-    
+
     return _holdingBin.count;
 }
 @end
@@ -103,17 +103,17 @@ static char* const SplytEventDepot_QUEUENAME = "com.splyt.eventdepot";
     @try {
         NSString* file = [NSString stringWithFormat:@"%@%lu", SplytEventDepot_BATCH_PFX, (unsigned long)self.state.archiveEnd];
         NSString* path = [_libraryPath stringByAppendingPathComponent:file];
-        
+
         [NSKeyedArchiver archiveRootObject:@{@"bin":bin, @"url":url} toFile:path];
     }
     @catch (NSException* exception) {
         [SplytUtil logError:[NSString stringWithFormat:@"Unable to save queued events to storage! Exception: %@", [exception reason]]];
     }
-    
+
     self.state.archiveEnd += 1;
     if(self.state.archiveEnd == SplytEventDepot_MAXBINS)
         self.state.archiveEnd = 0;
-    
+
     // if we looped around, advance the start
     if(self.state.archiveEnd == self.state.archiveStart) {
         self.state.archiveStart += 1;
@@ -128,17 +128,17 @@ static char* const SplytEventDepot_QUEUENAME = "com.splyt.eventdepot";
 - (id) _binLoad:(NSString**)url {
     NSArray* bin = nil;
     *url = nil;
-    
+
     if(self.state.archiveStart != self.state.archiveEnd) {
         // load a batch from storage
         @try {
             NSString* file = [NSString stringWithFormat:@"%@%lu", SplytEventDepot_BATCH_PFX, (unsigned long)self.state.archiveStart];
             NSString* path = [_libraryPath stringByAppendingPathComponent:file];
-            
+
             NSDictionary* contents = [NSKeyedUnarchiver unarchiveObjectWithFile:path];
             bin = [contents objectForKey:@"bin"];
             *url = [contents objectForKey:@"url"];
-            
+
             // delete from storage
             NSError *error;
             BOOL success = [[NSFileManager defaultManager] removeItemAtPath:path error:&error];
@@ -149,39 +149,39 @@ static char* const SplytEventDepot_QUEUENAME = "com.splyt.eventdepot";
         @catch (NSException* exception) {
             [SplytUtil logError:[NSString stringWithFormat:@"Failed to load event batch %lu from storage", (unsigned long)self.state.archiveStart]];
         }
-        
+
         self.state.archiveStart += 1;
         if(self.state.archiveStart == SplytEventDepot_MAXBINS)
             self.state.archiveStart = 0;
-        
+
         // keep state in sync w/ bin files
         [self _stateSave];
     }
-    
+
     return bin;
 }
 
 - (BOOL) _binSend:(NSArray*)bin toURL:(NSString*)url{
     NSNumber* timestamp = [SplytUtil getTimestamp];
     NSArray* args = @[SPLYT_SAFE(timestamp), SPLYT_SAFE(bin)];
-    
+
     if(nil == url) {
         [SplytUtil logError:@"Internal Error: Trying to send data w/o a bin url. Using default."];
         url = _url;
     }
-    
+
     NSDictionary* data = _sender(url, args);
-    
+
     if(nil == data) {
         // decay processing interval when a send fails
         _processDelay = fmin(_processDelay * 2.0, SplytEventDepot_PROCESSBIN_MAXPERIOD);
-        
+
         [SplytUtil logDebug:@"Sending batch failed.  Retry pending"];
     }
     else {
         _processDelay = fmax(_processDelay / 2.0, SplytEventDepot_PROCESSBIN_MINPERIOD);
     }
-    
+
     return nil != data;
 }
 
@@ -205,7 +205,7 @@ static char* const SplytEventDepot_QUEUENAME = "com.splyt.eventdepot";
             // for the super unlikely event that a non-coded file exists at the location
             self.state = nil;
         }
-        
+
         // if we didn't load cached state, just init the structure so it's ready for future use
         if(nil == self.state)
             self.state = [[SplytEventDepotState alloc] init];
@@ -217,7 +217,7 @@ static char* const SplytEventDepot_QUEUENAME = "com.splyt.eventdepot";
 
 - (void) _stateProcessBins:(BOOL)flushHoldingBin {
     NSArray* bin;
-    
+
     // if there are events to be re-sent, they get priority
     if(nil != self.state.resendBin && self.state.resendBin.count > 0) {
         if([self _binSend:self.state.resendBin toURL:self.state.resendBinURL]) {
@@ -244,7 +244,7 @@ static char* const SplytEventDepot_QUEUENAME = "com.splyt.eventdepot";
             self.state.holdingBinURL = nil;
         }
     }
-    
+
     // if the holding bin is oversized, flush it to disk
     if(nil != self.state.holdingBin && (flushHoldingBin || self.state.holdingBin.count > SplytEventDepot_MAXEVENTSPERBIN)) {
         [self _binSave:self.state.holdingBin withURL:self.state.holdingBinURL];
@@ -256,7 +256,7 @@ static char* const SplytEventDepot_QUEUENAME = "com.splyt.eventdepot";
 - (void) _stateProcessJob {
     dispatch_async(_queue, ^{
         [self _stateProcessBins:false];
-        
+
         // add self back to queue after delay (note that this uses GCD main queue)
         dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(_processDelay * NSEC_PER_SEC));
         dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
@@ -267,21 +267,21 @@ static char* const SplytEventDepot_QUEUENAME = "com.splyt.eventdepot";
 
 - (id) initWithURL:(NSString*)url andSender:(SplytEventSender)sender {
     self = [super init];
-    
+
     _url = url;
     _sender = sender;
     _queue = dispatch_queue_create(SplytEventDepot_QUEUENAME, DISPATCH_QUEUE_SERIAL);
-    
+
 #if DEBUG
     // setup some protection against touching the state outside the serial queue
     // re: http://stackoverflow.com/questions/12806506/how-can-i-verify-that-i-am-running-on-a-given-gcd-queue-without-using-dispatch-g
     // and: https://developer.apple.com/library/ios/documentation/Performance/Reference/GCD_libdispatch_Ref/Reference/reference.html#//apple_ref/c/func/dispatch_queue_set_specific
     dispatch_queue_set_specific(_queue, SplytEventDepot_SENTINEL, SplytEventDepot_SENTINEL, NULL);
 #endif
-    
+
     _paused = NO;
     _processDelay = SplytEventDepot_PROCESSBIN_MINPERIOD;
-    
+
     NSArray *paths = NSSearchPathForDirectoriesInDomains(NSLibraryDirectory, NSUserDomainMask, YES);
     _libraryPath = [paths objectAtIndex:0];
 
@@ -294,41 +294,41 @@ static char* const SplytEventDepot_QUEUENAME = "com.splyt.eventdepot";
 
     // start up the recurring state-processing job
     [self _stateProcessJob];
-    
+
     return self;
 }
 
 - (SplytError) storeEvent:(NSString*)eventName withArgs:(NSArray*)args {
     if(nil == _queue)
         return SplytError_NotInitialized;
-    
+
     dispatch_async(_queue, ^{
         if(_paused) {
             [self _stateRestore];
         }
-        
+
         NSUInteger count = [self.state store:[SplytEvent eventFromName:eventName andArgs:args] forURL:_url];
         if(count > SplytEventDepot_MAXEVENTSPERBIN) {
             [self _stateProcessBins:NO];
         }
-        
+
         if(_paused) {
             [self _stateSave];
             self.state = nil;
         }
     });
-    
+
     return SplytError_Success;
 }
 
 - (void) pause {
     if(nil == _queue)
         return;
-    
+
     dispatch_async(_queue, ^{
         if(!_paused) {
             _paused = YES;
-            
+
             [self _stateSave];
             self.state = nil;
         }
@@ -338,14 +338,14 @@ static char* const SplytEventDepot_QUEUENAME = "com.splyt.eventdepot";
 - (void) resume {
     if(nil == _queue)
         return;
-    
+
     dispatch_async(_queue, ^{
         if(_paused) {
             [self _stateRestore];
-            
+
             // assume that we have connectivity after a resume
             _processDelay = SplytEventDepot_PROCESSBIN_MINPERIOD;
-            
+
             _paused = NO;
         }
     });

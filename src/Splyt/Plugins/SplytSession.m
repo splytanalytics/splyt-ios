@@ -2,7 +2,7 @@
 //  SplytSession.m
 //  Splyt
 //
-//  Copyright (c) 2013 Row Sham Bow, Inc. All rights reserved.
+//  Copyright 2015 Knetik, Inc. All rights reserved.
 //
 
 #import <Splyt/SplytSession.h>
@@ -25,10 +25,10 @@ static const NSTimeInterval DEFAULT_TIMEOUT = 10.0 * 86400.0; // 10 days
     // override some internals before calling init block
     _timeoutMode = SplytTimeoutMode_Any;
     _timeout = DEFAULT_TIMEOUT;
-    
+
     if(initBlock)
         initBlock(self);
-    
+
     return self;
 }
 @end
@@ -41,14 +41,14 @@ static const NSTimeInterval DEFAULT_TIMEOUT = 10.0 * 86400.0; // 10 days
 - (SplytSessionTransaction*) Transaction {
     SplytSessionTransaction *trx = [[SplytSessionTransaction alloc] initWithInitBlock:nil];
     trx.core = self.instrumentation.core;
-    
+
     return trx;
 }
 
 - (SplytSessionTransaction*) TransactionWithInitBlock:(void (^)(SplytSessionTransaction*)) initBlock {
     SplytSessionTransaction *trx = [[SplytSessionTransaction alloc] initWithInitBlock:initBlock];
     trx.core = self.instrumentation.core;
-    
+
     return trx;
 }
 

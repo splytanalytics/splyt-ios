@@ -11,7 +11,7 @@
 	<key>IDESourceControlProjectOriginsDictionary</key>
 	<dict>
 		<key>AE98021B30C6FA44766B296D79D3EB836CC3D783</key>
-		<string>https://github.com/rowshambow/splyt-sdk.git</string>
+		<string>https://github.com/splytanalytics/splyt-ios.git</string>
 	</dict>
 	<key>IDESourceControlProjectPath</key>
 	<string>ios/Splyt.xcworkspace</string>
@@ -21,7 +21,7 @@
 		<string>../..</string>
 	</dict>
 	<key>IDESourceControlProjectURL</key>
-	<string>https://github.com/rowshambow/splyt-sdk.git</string>
+	<string>https://github.com/splytanalytics/splyt-ios.git</string>
 	<key>IDESourceControlProjectVersion</key>
 	<integer>111</integer>
 	<key>IDESourceControlProjectWCCIdentifier</key>

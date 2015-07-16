@@ -3,7 +3,7 @@
 //  Splyt
 //
 //  Created by Justin W. Russell on 12/9/14.
-//  Copyright (c) 2014 Row Sham Bow, Inc. All rights reserved.
+//  Copyright 2015 Knetik, Inc. All rights reserved.
 //
 
 // init Use Cases:
