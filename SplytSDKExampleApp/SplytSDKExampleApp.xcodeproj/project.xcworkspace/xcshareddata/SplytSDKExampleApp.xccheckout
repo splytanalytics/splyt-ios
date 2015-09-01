@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>IDESourceControlProjectFavoriteDictionaryKey</key>
+	<false/>
+	<key>IDESourceControlProjectIdentifier</key>
+	<string>83097ED8-4D0C-4C95-811C-5674591ACDD4</string>
+	<key>IDESourceControlProjectName</key>
+	<string>SplytSDKExampleApp</string>
+	<key>IDESourceControlProjectOriginsDictionary</key>
+	<dict>
+		<key>CB3AFF23D2E88D059D2AC15E49DCA4D2E0176048</key>
+		<string>https://github.com/splytanalytics/splyt-ios</string>
+	</dict>
+	<key>IDESourceControlProjectPath</key>
+	<string>SplytSDKExampleApp/SplytSDKExampleApp.xcodeproj</string>
+	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
+	<dict>
+		<key>CB3AFF23D2E88D059D2AC15E49DCA4D2E0176048</key>
+		<string>../../..</string>
+	</dict>
+	<key>IDESourceControlProjectURL</key>
+	<string>https://github.com/splytanalytics/splyt-ios</string>
+	<key>IDESourceControlProjectVersion</key>
+	<integer>111</integer>
+	<key>IDESourceControlProjectWCCIdentifier</key>
+	<string>CB3AFF23D2E88D059D2AC15E49DCA4D2E0176048</string>
+	<key>IDESourceControlProjectWCConfigurations</key>
+	<array>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>CB3AFF23D2E88D059D2AC15E49DCA4D2E0176048</string>
+			<key>IDESourceControlWCCName</key>
+			<string>splyt-ios</string>
+		</dict>
+	</array>
+</dict>
+</plist>
