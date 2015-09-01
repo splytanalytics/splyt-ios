@@ -332,27 +332,7 @@ Retrieve all tuning variables for a specific entity. If no variables exist, the 
                                              NSLog(@"%@", response);
                                          }];
 ```
-## Method
 
-This is the description
-
-```
-    /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-     * Update device.
-     * @param deviceId Device id of device to update.
-     * @param properties Dictionary of user properties to update device with.
-     * @param eventTimestamp Time at which event occurred.
-     * @return response Dictionary representation of API response.
-     * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    [[Splyt deviceManager] updateDeviceWithId:myDeviceId
-                                   properties:myDeviceProperties
-                               eventTimestamp:myTimestamp
-                                      success:^(NSDictionary *response) {
-                                          NSLog(@"%@", response);
-                                    } failure:^(NSDictionary *response) {
-                                          NSLog(@"%@", response);
-                                      }];
-```
 ## Record a New Tuning Variable
 
 This method allows sending new tuning variables to the Splyt dashboard. The variable will need to be confirmed from the dashboard to become active.
